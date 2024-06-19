@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalendarz Wizyt - System Informacji Medycznej</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #5bc0de;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        .nav {
+            overflow: hidden;
+            background-color: #333;
+            position: relative;
+        }
+        .nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .current-time {
+            position: absolute;
+            right: 16px;
+            top: 14px;
+            color: white;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #5bc0de;
+        }
+        form label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        form input[type="text"],
+        form input[type="date"],
+        form input[type="time"],
+        form input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        form button {
+            background-color: #5bc0de;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #46b8da;
+        }
+        .calendar {
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .calendar-day {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .calendar-day h3 {
+            color: #333;
+            margin: 0 0 10px;
+        }
+        .appointment {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            position: relative;
+        }
+        .appointment h3 {
+            margin-top: 0;
+            color: #5bc0de;
+        }
+        .appointment p {
+            margin-bottom: 5px;
+        }
+        .buttons {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .buttons button {
+            margin-left: 5px;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            color: white;
+        }
+        .edit-button {
+            background-color: #f0ad4e;
+        }
+        .delete-button {
+            background-color: #d9534f;
+        }
+        .confirm-button {
+            background-color: #5bc0de;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Kalendarz Wizyt</h1>
+</div>
+
+<div class="nav">
+    <a href="C:\Users\Mati\Desktop\Nowy folder (3)\index.html" id="homeLink">Strona Główna</a>
+    <a href="#profile" id="profileLink">Profil Pacjenta</a>
+    <a href="#documents" id="documentsLink">Dokumentacja Medyczna</a>
+    <a href="C:\Users\Mati\Desktop\Nowy folder (3)\calendar\calendar.html" id="appointmentsLink">Wizyty</a>
+    <a href="#settings" id="settingsLink">Ustawienia</a>
+    <div class="current-time" id="currentTime"></div>
+</div>
+
+<div class="main-content">
+    <div class="form-container">
+        <h2>Dodaj nową wizytę</h2>
+        <form id="appointmentForm">
+            <label for="patientName">Imię i nazwisko pacjenta</label>
+            <input type="text" id="patientName" name="patientName" required>
+
+            <label for="dob">Data urodzenia</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="phone">Numer telefonu</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="purpose">Cel wizyty</label>
+            <input type="text" id="purpose" name="purpose" required>
+
+            <label for="appointmentDate">Data wizyty</label>
+            <input type="date" id="appointmentDate" name="appointmentDate" required>
+
+            <label for="appointmentTime">Godzina wizyty</label>
+            <input type="time" id="appointmentTime" name="appointmentTime" required>
+
+            <label for="doctor">Lekarz</label>
+            <input type="text" id="doctor" name="doctor" required>
+
+            <button type="submit">Dodaj wizytę</button>
+        </form>
+    </div>
+
+    <div class="calendar" id="calendar">
+        <!-- W tym miejscu dynamicznie będą pojawiać się wizyty -->
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appointmentForm');
+    const calendar = document.getElementById('calendar');
+    const currentTimeDisplay = document.getElementById('currentTime');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const patientName = document.getElementById('patientName').value;
+        const dob = document.getElementById('dob').value;
+        const phone = document.getElementById('phone').value;
+        const purpose = document.getElementById('purpose').value;
+        const appointmentDate = document.getElementById('appointmentDate').value;
+        const appointmentTime = document.getElementById('appointmentTime').value;
+        const doctor = document.getElementById('doctor').value;
+
+        const appointmentData = {
+            patientName,
+            dob,
+            phone,
+            purpose,
+            appointmentDate,
+            appointmentTime,
+            doctor
+        };
+
+        // Wysłanie danych do serwera
+        fetch('/api/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(appointmentData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+                loadAppointments();
+            } else {
+                alert('Wystąpił problem przy dodawaniu wizyty');
+            }
+        })
+        .catch(error => {
+            console.error('Błąd:', error);
+            alert('Wystąpił błąd podczas wysyłania danych.');
+        });
+
+        form.reset();
+    });
+
+    function loadAppointments() {
+        fetch('/api/appointments')
+        .then(response => response.json())
+        .then(appointments => {
+            calendar.innerHTML = '';
+            appointments.forEach(appointment => {
+                const appointmentElement = document.createElement('div');
+                appointmentElement.classList.add('appointment');
+                appointmentElement.innerHTML = `
+                    <h3>${appointment.patientName}</h3>
+                    <p>Data urodzenia: ${appointment.dob}</p>
+                    <p>Numer telefonu: ${appointment.phone}</p>
+                    <p>Cel wizyty: ${appointment.purpose}</p>
+                    <p>Data wizyty: ${appointment.appointmentDate}</p>
+                    <p>Godzina wizyty: ${appointment.appointmentTime}</p>
+                    <p>Lekarz: ${appointment.doctor}</p>
+                    <div class="buttons">
+                        <button class="edit-button">Edytuj</button>
+                        <button class="delete-button">Anuluj</button>
+                        <button class="confirm-button">Potwierdź</button>
+                    </div>
+                `;
+                calendar.appendChild(appointmentElement);
+
+                addAppointmentListeners(appointmentElement);
+            });
+        })
+        .catch(error => {
+            console.error('Błąd pobierania wizyt:', error);
+        });
+    }
+
+    function addAppointmentListeners(appointmentElement) {
+        const editButton = appointmentElement.querySelector('.edit-button');
+        const deleteButton = appointmentElement.querySelector('.delete-button');
+        const confirmButton = appointmentElement.querySelector('.confirm-button');
+
+        editButton.addEventListener('click', () => {
+            editAppointment(appointmentElement);
+        });
+
+        deleteButton.addEventListener('click', () => {
+            if (confirm('Czy na pewno chcesz anulować wizytę?')) {
+                const calendarDay = appointmentElement.parentNode;
+                appointmentElement.remove();
+
+                if (calendarDay.getElementsByClassName('appointment').length === 0) {
+                    calendarDay.remove();
+                }
+            }
+        });
+
+        confirmButton.addEventListener('click', () => {
+            alert('Funkcja "Potwierdź" wkrótce będzie dostępna.');
+        });
+    }
+
+    function editAppointment(appointmentElement) {
+        const patientName = appointmentElement.querySelector('h3').textContent;
+        const dob = appointmentElement.querySelector('p:nth-child(2)').textContent.split(': ')[1];
+        const phone = appointmentElement.querySelector('p:nth-child(3)').textContent.split(': ')[1];
+        const purpose = appointmentElement.querySelector('p:nth-child(4)').textContent.split(': ')[1];
+        const appointmentDate = appointmentElement.querySelector('p:nth-child(5)').textContent.split(': ')[1];
+        const appointmentTime = appointmentElement.querySelector('p:nth-child(6)').textContent.split(': ')[1];
+        const doctor = appointmentElement.querySelector('p:nth-child(7)').textContent.split(': ')[1];
+
+        document.getElementById('patientName').value = patientName;
+        document.getElementById('dob').value = dob;
+        document.getElementById('phone').value = phone;
+        document.getElementById('purpose').value = purpose;
+        document.getElementById('appointmentDate').value = appointmentDate;
+        document.getElementById('appointmentTime').value = appointmentTime;
+        document.getElementById('doctor').value = doctor;
+
+        appointmentElement.remove();
+    }
+
+    function updateTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleString('pl-PL', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        currentTimeDisplay.textContent = formattedTime;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    loadAppointments();
+
+});
+
+</script>
+
+</body>
+</html>

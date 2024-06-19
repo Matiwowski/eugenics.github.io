@@ -1,0 +1,9 @@
+{
+  "username": "testuser",
+  "password": "password123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "role": "user",
+  "createdAt": "2024-06-19T00:00:00.000Z",
+  "updatedAt": "2024-06-19T00:00:00.000Z"
+}
