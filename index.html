@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Informacji Medycznej Eugenics - Strona Główna</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .header {
+            background-color: #5bc0de; /* Jasnoniebieski */
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative; /* Dodane */
+        }
+        .nav {
+            overflow: hidden;
+            background-color: #333;
+            position: relative;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Dodane */
+            padding: 14px 20px; /* Nowe */
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px; /* Dopasowane */
+            transition: background-color 0.3s; /* Nowe */
+        }
+        .nav a:hover {
+            background-color: #555; /* Nowe */
+        }
+        .current-time {
+            color: white;
+            font-size: 14px; /* Nowe */
+        }
+        .main-content {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sidebar-left {
+            width: 30%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .sidebar-left h2 {
+            margin-top: 0;
+            color: #5bc0de; /* Jasnoniebieski */
+        }
+        .sidebar-left ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar-left ul li {
+            margin-bottom: 10px;
+        }
+        .sidebar-left ul li a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 5px; /* Nowe */
+            transition: background-color 0.3s; /* Nowe */
+        }
+        .sidebar-left ul li a:hover {
+            background-color: #f0f0f0; /* Nowe */
+        }
+        .content {
+            width: 65%;
+        }
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .card h2 {
+            color: #5bc0de; /* Jasnoniebieski */
+            margin-top: 0;
+        }
+        .card p {
+            margin-bottom: 5px;
+        }
+        .card ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .card ul li {
+            margin-bottom: 5px;
+        }
+        .card button {
+            background-color: #5bc0de; /* Jasnoniebieski */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .card button:hover {
+            background-color: #46b8da; /* Jasny niebieski */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>System Informacji Medycznej Eugenics</h1>
+</div>
+
+<div class="nav">
+    <div>
+        <a href="#profile">Profil Pacjenta</a>
+        <a href="#documents">Dokumentacja Medyczna</a>
+        <a href="calendar/calendar.html">Wizyty</a>
+        <a href="#settings">Ustawienia</a>
+        <a href="#" id="logout">Wyloguj</a>
+    </div>
+    <div>
+        <div class="current-time" id="current-time"></div>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="sidebar-left">
+        <h2>Nadchodzące wizyty</h2>
+        <ul id="upcomingAppointments">
+            <!-- Tutaj będą dynamicznie dodawane najnowsze wizyty -->
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="card">
+            <h2>Informacje o Pacjencie</h2>
+            <p>Imię i nazwisko: Jan Kowalski</p>
+            <p>PESEL: 12345678901</p>
+            <p>Data urodzenia: 01.01.1980</p>
+        </div>
+        <div class="card">
+            <h2>Ostatnie Zdarzenia Medyczne</h2>
+            <ul>
+                <li>Wizyta u kardiologa - 15.06.2024</li>
+                <li>Badanie krwi - 10.06.2024</li>
+                <li>Wizyta u ortopedy - 05.06.2024</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Dostęp do Dokumentacji</h2>
+            <button>Przeglądaj dokumentację medyczną</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const upcomingAppointments = document.getElementById('upcomingAppointments');
+
+        // Symulacja danych wizyt
+        const appointments = [
+            {
+                patientName: 'Jan Kowalski',
+                appointmentDate: '2024-06-18',
+                appointmentTime: '10:00',
+                doctor: 'dr. Nowak'
+            },
+            {
+                patientName: 'Anna Nowak',
+                appointmentDate: '2024-06-19',
+                appointmentTime: '11:30',
+                doctor: 'dr. Kowalski'
+            }
+        ];
+
+        // Wyświetlanie każdej wizyty
+        appointments.forEach(appointment => {
+            addUpcomingAppointment(appointment.patientName, appointment.appointmentDate, appointment.appointmentTime, appointment.doctor);
+        });
+
+        // Dodawanie wizyty do listy "Nadchodzące wizyty"
+        function addUpcomingAppointment(patientName, appointmentDate, appointmentTime, doctor) {
+            const newAppointment = document.createElement('li');
+            newAppointment.innerHTML = `
+                <h3>${patientName}</h3>
+                <p>Data wizyty: ${appointmentDate}</p>
+                <p>Godzina wizyty: ${appointmentTime}</p>
+                <p>Lekarz: ${doctor}</p>
+            `;
+            upcomingAppointments.appendChild(newAppointment);
+        }
+
+        // Funkcja aktualizująca godzinę
+        function updateTime() {
+            const now = new Date();
+            const formattedTime = now.toLocaleString('pl-PL', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = formattedTime;
+        }
+
+        // Aktualizacja godziny co sekundę
+        setInterval(updateTime, 1000);
+        updateTime(); // Wywołanie na start
+
+        // Obsługa kliknięcia na "Wyloguj"
+        const logoutLink = document.getElementById('logout');
+        logoutLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Zapobiegamy domyślnej akcji kliknięcia
+
+            // Przekierowanie do strony logowania
+            window.location.href = 'file:///C:/Users/Mati/Desktop/Nowy%20folder%20(3)/login/login.html';
+        });
+
+        // Podświetlanie opcji nawigacyjnych
+        const navLinks = document.querySelectorAll('.nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.backgroundColor = '#555';
+            });
+            link.addEventListener('mouseleave', () => {
+                link.style.backgroundColor = '';
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
